@@ -24,10 +24,11 @@
 (cl-defun isbn-10-p (number)
   "Return non-nil if NUMBER is a valid ISBN-10."
   (cl-check-type number string)
-  (let* (
-         (number-without-hyphens (replace-regexp-in-string "-" "" number))
+  (let* ((number-without-hyphens (replace-regexp-in-string "-" "" number))
          (number-as-list
-          (mapcar #'string-to-number (string-split number-without-hyphens "" 'omit-nulls))))
+          (mapcar
+           #'string-to-number
+           (string-split number-without-hyphens "" 'omit-nulls))))
     (and
      (= 10 (length number-as-list))
      ;; Each of the first nine digits of the 10-digit ISBN—excluding the check
@@ -52,7 +53,8 @@
   (let* ((number-without-hyphens (replace-regexp-in-string "-" "" number))
          (number-as-list
           (mapcar
-           #'string-to-number (string-split number-without-hyphens "" 'omit-nulls))))
+           #'string-to-number
+           (string-split number-without-hyphens "" 'omit-nulls))))
     (and
      (= 13 (length number-as-list))
      ;; The ISBN-13 check digit, which is the last digit of the ISBN, must range
@@ -79,7 +81,10 @@
          10)))))
 
 (defvar isbn--hyphenated-number-regexp
-  (rx space (group (maximal-match (one-or-more (seq digit (zero-or-one "-"))))) space)
+  (rx
+   space
+   (group (maximal-match (one-or-more (seq digit (zero-or-one "-")))))
+   space)
   "Matches a chain of hyphenated(?) digits.")
 
 (cl-defun isbn--get-all-candidates-in-buffer ()
@@ -89,20 +94,15 @@
       (goto-char (point-min))
       (while (re-search-forward isbn--hyphenated-number-regexp nil t)
         (push (substring-no-properties (match-string 1)) candidates)))
-    (nreverse
-     candidates)))
+    (nreverse candidates)))
 
 (cl-defun isbn-13-get-all-in-buffer ()
   "Return list of ISBN-13 numbers in the current buffer."
-  (seq-filter
-   #'isbn-13-p
-   (isbn--get-all-candidates-in-buffer)))
+  (seq-filter #'isbn-13-p (isbn--get-all-candidates-in-buffer)))
 
 (cl-defun isbn-10-get-all-in-buffer ()
   "Return list of ISBN-10 numbers in the current buffer."
-  (seq-filter
-   #'isbn-10-p
-   (isbn--get-all-candidates-in-buffer)))
+  (seq-filter #'isbn-10-p (isbn--get-all-candidates-in-buffer)))
 
 (provide 'isbn)
 ;;; isbn.el ends here
