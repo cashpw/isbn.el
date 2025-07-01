@@ -1,0 +1,8 @@
+:PROPERTIES:
+:LAST_MODIFIED: [2025-06-30 Mon 20:56]
+:END:
+#+title: isbn.el
+
+[[https://en.wikipedia.org/wiki/ISBN][ISBN]] utilities.
+
+* TODO Add tests
